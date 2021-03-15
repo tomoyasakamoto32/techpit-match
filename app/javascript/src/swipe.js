@@ -14,9 +14,44 @@ if(location.pathname == "/users") {
         card.style.transform = 'scale(' + (20 - index) / 20 + ') translateY(-' + 30 * index + 'px)';
         card.style.opacity = (10 - index) / 10;
       });
+
+      if (newCards.length == 0) {
+        $(".no-user").addClass("is-active");
+      }
     }
 
     initCards();
+
+    function createButtonListener(reaction) {
+
+      // ==========ここから追加する==========
+      let cards = document.querySelectorAll('.swipe--card:not(.removed)');
+    
+      if (!cards.length) return false;
+    
+      let moveOutWidth = document.body.clientWidth * 2;
+    
+      let card = cards[0];
+      card.classList.add('removed');
+    
+      if (reaction == "like") {
+        card.style.transform = 'translate(' + moveOutWidth + 'px, -100px) rotate(-30deg)';
+      } else {
+        card.style.transform = 'translate(-' + moveOutWidth + 'px, -100px) rotate(30deg)';
+      }
+    
+      initCards();
+      // ==========ここまで追加する==========
+    
+    }
+    
+    $('#like').on('click', function() {
+      createButtonListener("like");
+    })
+
+    $('#dislike').on('click', function() {
+      createButtonListener("dislike");
+    })
 
     allCards.forEach(function (el) {
       let hammertime = new Hammer(el);
