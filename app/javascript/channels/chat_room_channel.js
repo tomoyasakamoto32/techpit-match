@@ -1,6 +1,8 @@
 import consumer from "./consumer"
 
-consumer.subscriptions.create("ChatRoomChannel", {
+const chatForm = document.getElementById('chat_form');
+
+const appChatRoom = consumer.subscriptions.create("ChatRoomChannel", {
   connected() {
     // Called when the subscription is ready for use on the server
   },
@@ -10,10 +12,21 @@ consumer.subscriptions.create("ChatRoomChannel", {
   },
 
   received(data) {
-    // Called when there's incoming data on the websocket for this channel
+    return alert(data['chat_message']);
   },
 
-  speak: function() {
-    return this.perform('speak');
+  speak(chat_message) {
+    return this.perform('speak', { chat_message: chat_message });
   }
 });
+
+if(/chat_rooms/.test(location.pathname)) {
+  $(document).on("keydown", ".chat-room__message-form_textarea", function(e) {
+    if (e.key === "Enter") {
+      appChatRoom.speak(e.target.value);
+      e.target.value = '';
+      console.log(e.target.value);
+      e.preventDefault();
+    }
+  })
+}
